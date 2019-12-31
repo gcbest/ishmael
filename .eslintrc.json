@@ -2,6 +2,7 @@
   "extends": ["wesbos"],
   "rules": {
     "no-console": 2,
+    "react/jsx-filename-extension": false,
     "prettier/prettier": [
       "error",
       {
