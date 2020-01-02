@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { transport, makeANiceEmail } from '../lib/mail';
 import { hasPermission } from '../lib/utils';
 
-export const Mutations = {
+const Mutations = {
         async signup(parent, args, ctx, info) {
                 // lowercase their email
                 args.email = args.email.toLowerCase();
@@ -153,3 +153,5 @@ export const Mutations = {
                 );
         },
 };
+
+export default Mutations;
