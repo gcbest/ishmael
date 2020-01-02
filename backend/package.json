@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e ts,graphql -x node src/index.ts",
-    "dev": "nodemon -e ts,graphql -x node --inspect src/index.ts",
+    "start": "nodemon -e ts,graphql -x ts-node src/index.ts",
+    "dev": "nodemon -e ts,graphql -x ts-node src/index.ts",
     "deploy": "prisma deploy"
   },
   "keywords": [],
@@ -25,6 +25,8 @@
     "prisma-binding": "^2.3.16"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.0"
+    "@types/nodemailer": "^6.4.0",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.4"
   }
 }
