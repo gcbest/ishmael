@@ -1,14 +1,14 @@
-import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
-import { GraphQLServer } from 'graphql-yoga';
-import createServer from './createServer';
-import db from './db';
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const config = require('dotenv');
+const GraphQLServer = require('graphql-yoga');
+const createServer = require('./createServer');
+const db = require('./db');
 
 // .env configuring
 config();
 
-const server: GraphQLServer = createServer();
+const server = createServer();
 server.express.use(cookieParser());
 
 // 1. decode the JWT so we can get the user Id on each request
