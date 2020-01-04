@@ -1,12 +1,10 @@
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
-const config = require('dotenv');
-const GraphQLServer = require('graphql-yoga');
-const createServer = require('./createServer');
-const db = require('./db');
 
 // .env configuring
-config();
+require('dotenv').config();
+const GraphQLServer = require('graphql-yoga');
+const createServer = require('./createServer');
 
 const server = createServer();
 server.express.use(cookieParser());
