@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // .env configuring
 require('dotenv').config();
-const GraphQLServer = require('graphql-yoga');
 const createServer = require('./createServer');
+const db = require('./db');
 
 const server = createServer();
 server.express.use(cookieParser());
