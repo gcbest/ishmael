@@ -22,7 +22,6 @@ import {
     createStyles,
     makeStyles,
     ThemeProvider,
-    useTheme,
     createMuiTheme,
     Theme,
 } from '@material-ui/core/styles';
@@ -53,26 +52,37 @@ const darkTheme = createMuiTheme({
     },
 });
 
-function Demo() {
-    const defaultClasses = useStyles(darkTheme);
-    const theme = useTheme();
-    const [classes, setClasses] = useState({ darkMode: false });
+interface Props {
+    theme: Theme;
+    onToggleTheme: Function;
+}
 
+const Demo: React.FC<Props> = ({ theme, onToggleTheme }: Props) => {
+    const classes = useStyles(theme);
     return (
         <div className={classes.root}>
             <Typography>{`${theme.palette.type} theme`}</Typography>
             <div>
-                <Button onClick={() => setClasses({ darkMode: classes })}>Toggle</Button>
+                <Button onClick={() => onToggleTheme()}>Toggle</Button>
             </div>
         </div>
     );
-}
+};
 
 export default function HomePage() {
+    const [theme, setTheme] = useState(lightTheme);
+
+    // we change the palette type of the theme in state
+    const toggleDarkTheme = () => {
+        const newTheme = theme.palette.type === 'light' ? darkTheme : lightTheme;
+        setTheme(newTheme);
+    };
+
+    const muiTheme = theme;
     return (
         <div style={{ width: '100%' }}>
-            <ThemeProvider theme={darkTheme}>
-                <Demo />
+            <ThemeProvider theme={muiTheme}>
+                <Demo theme={muiTheme} onToggleTheme={toggleDarkTheme} />
             </ThemeProvider>
         </div>
     );
