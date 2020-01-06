@@ -1,23 +1,4 @@
-// import getMuiTheme from 'material-ui/styles/getMuiTheme';
-// import { MuiThemeProvider, lightBaseTheme, darkBaseTheme } from 'material-ui/styles';
-// import Home from '../components/Home';
-
-// const lightMuiTheme = getMuiTheme(lightBaseTheme);
-// const darkMuiTheme = getMuiTheme(darkBaseTheme);
-
-// const HomePage = () => (
-//     // <MuiThemeProvider muiTheme={darkMuiTheme}>
-//     //     <Home />
-//     // </MuiThemeProvider>
-//     <MuiThemeProvider muiTheme={lightMuiTheme}>
-//         <Home />
-//     </MuiThemeProvider>
-// );
-
-// export default HomePage;
-
 import React, { useState } from 'react';
-import Typography from '@material-ui/core/Typography';
 import {
     createStyles,
     makeStyles,
@@ -25,9 +6,9 @@ import {
     createMuiTheme,
     Theme,
 } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import Home from '../components/Home';
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             padding: theme.spacing(3),
@@ -38,36 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const lightTheme = createMuiTheme({
-    palette: {
-        // This is the default, so only included for comparison.
-        type: 'light',
-    },
-});
+// This is the default
+export const lightTheme = createMuiTheme({ palette: { type: 'light' } });
 
-const darkTheme = createMuiTheme({
-    palette: {
-        // Switching the dark mode on is a single property value change.
-        type: 'dark',
-    },
-});
-
-interface Props {
-    theme: Theme;
-    onToggleTheme: Function;
-}
-
-const Demo: React.FC<Props> = ({ theme, onToggleTheme }: Props) => {
-    const classes = useStyles(theme);
-    return (
-        <div className={classes.root}>
-            <Typography>{`${theme.palette.type} theme`}</Typography>
-            <div>
-                <Button onClick={() => onToggleTheme()}>Toggle</Button>
-            </div>
-        </div>
-    );
-};
+// Switching the dark mode on is a single property value change.
+export const darkTheme = createMuiTheme({ palette: { type: 'dark' } });
 
 export default function HomePage() {
     const [theme, setTheme] = useState(lightTheme);
@@ -82,7 +38,7 @@ export default function HomePage() {
     return (
         <div style={{ width: '100%' }}>
             <ThemeProvider theme={muiTheme}>
-                <Demo theme={muiTheme} onToggleTheme={toggleDarkTheme} />
+                <Home theme={muiTheme} onToggleTheme={toggleDarkTheme} />
             </ThemeProvider>
         </div>
     );
