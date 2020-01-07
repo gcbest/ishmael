@@ -12,12 +12,10 @@ import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable } from 'apollo-link';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
-import jwtDecode from 'jwt-decode';
-import fetch from 'isomorphic-unfetch'
-
-import { getAccessToken, setAccessToken } from '../lib/accessToken';
-// import * as serviceWorker from './serviceWorker';
 /** ******* Apollo ********** */
+import jwtDecode from 'jwt-decode';
+import fetch from 'isomorphic-unfetch';
+import { getAccessToken, setAccessToken } from '../lib/accessToken';
 
 const cache = new InMemoryCache({});
 
@@ -107,7 +105,7 @@ const client = new ApolloClient({
         }),
         requestLink,
         new HttpLink({
-            uri: 'http://localhost:4000/graphql',
+            uri: 'http://localhost:4000',
             credentials: 'include',
             fetch
         }),
