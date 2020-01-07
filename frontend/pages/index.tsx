@@ -6,6 +6,7 @@ import {
     createMuiTheme,
     Theme,
 } from '@material-ui/core/styles';
+
 import Home from '../components/Home';
 
 export const useStyles = makeStyles((theme: Theme) =>
