@@ -1,13 +1,20 @@
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
-
 // .env configuring
 require('dotenv').config();
+require('./config/google-auth-strategy');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const createServer = require('./createServer');
+const auth = require('./routes/auth');
 const db = require('./db');
 
 const server = createServer();
 server.express.use(cookieParser());
+
+server.express.use(passport.initialize());
+server.express.use(passport.session());
+
+server.express.use('/auth', auth);
 
 // 1. decode the JWT so we can get the user Id on each request
 server.express.use((req, res, next) => {

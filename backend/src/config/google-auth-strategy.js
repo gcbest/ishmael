@@ -1,6 +1,14 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    done(null, { id });
+});
+
 passport.use(
     new GoogleStrategy(
         {
@@ -9,9 +17,11 @@ passport.use(
             callbackURL: '/auth/google/callback',
         },
         function(accessToken, refreshToken, profile, cb) {
-            User.findOrCreate({ googleId: profile.id }, function(err, user) {
-                return cb(err, user);
-            });
+            // TODO: make request to DB
+            // User.findOrCreate({ googleId: profile.id }, function(err, user) {
+            //     return cb(err, user);
+            // });
+            return cb(null, profile);
         }
     )
 );
