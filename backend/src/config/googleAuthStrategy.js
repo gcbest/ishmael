@@ -31,6 +31,7 @@ passport.use(
             const user = await db.mutation.createUser({
                 data: {
                     id: profile.id,
+                    
                     permissions: { set: ['USER'] },
                 },
             });
