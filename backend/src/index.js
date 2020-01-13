@@ -1,10 +1,11 @@
 // .env configuring
 require('dotenv').config();
-require('./config/googleAuthStrategy');
-require('./config/facebookAuthStrategy');
+// require('./config/googleAuthStrategy');
+// require('./config/facebookAuthStrategy');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+require('./config/authStrategies');
 const createServer = require('./createServer');
 const auth = require('./routes/auth');
 const db = require('./db');
@@ -14,8 +15,6 @@ server.express.use(cookieParser());
 
 server.express.use(passport.initialize());
 server.express.use(passport.session());
-
-server.express.use('/auth', auth);
 
 // 1. decode the JWT so we can get the user Id on each request
 server.express.use((req, res, next) => {
@@ -40,6 +39,9 @@ server.express.use(async (req, res, next) => {
     req.user = user;
     next();
 });
+
+// 3. Middleware for Facebook and Google OAuth
+server.express.use('/auth', auth);
 
 server.start(
     {

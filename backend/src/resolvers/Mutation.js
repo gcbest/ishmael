@@ -8,14 +8,14 @@ const { hasPermission } = require('../lib/utils');
 const Mutations = {
     async signup(parent, args, ctx, info) {
         // lowercase their email
-        args.email = args.email.toLowerCase();
+        args.email = args.local.email.toLowerCase();
         // hash their password
         const password = await bcrypt.hash(args.password, 10);
         // create the user in the database
         const user = await ctx.db.mutation.createUser(
             {
                 data: {
-                    ...args,
+                    local: { ...args },
                     password,
                     permissions: { set: ['USER'] },
                 },

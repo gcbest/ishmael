@@ -4,21 +4,22 @@ enum Permission {
   PERMISSIONUPDATE
 }
 
-interface Local {
+type Local {
+  id: ID! @id,
   name: String!,
   email: String!,
   password: String!,
 }
 
-interface Facebook {
-  id: String!,
+type Facebook {
+  id: ID! @id,
   token: String!,
   email: String!,
   name: String!
 }
 
-interface Google {
-  id: String!,
+type Google {
+  id: ID! @id,
   token: String!,
   email: String!,
   name: String!
