@@ -6,23 +6,23 @@ enum Permission {
 
 type Local {
   id: ID! @id,
-  name: String!,
-  email: String!,
-  password: String!,
+  name: String,
+  email: String,
+  password: String,
 }
 
 type Facebook {
   id: ID! @id,
-  token: String!,
-  email: String!,
-  name: String!
+  token: String,
+  email: String,
+  name: String
 }
 
 type Google {
   id: ID! @id,
-  token: String!,
-  email: String!,
-  name: String!
+  token: String,
+  email: String,
+  name: String
 }
 
 
@@ -31,7 +31,19 @@ type User {
   resetToken: String
   resetTokenExpiry: Float
   permissions: [Permission] @scalarList(strategy: RELATION)
-  local: Local
-  facebook: Facebook
-  google: Google
+  # local: Local
+  # facebook: Facebook
+  # google: Google
+  local: {
+    id: ID! @id,
+    name: String,
+    email: String,
+    password: String
+  }
+  google: {
+    id: ID! @id,
+  name: String,
+  email: String,
+  password: String
+  }
 }

@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/godfrey-best-e89415/ishmael/dev
-# timestamp: Mon Jan 13 2020 13:59:56 GMT-0500 (Eastern Standard Time)
+# timestamp: Tue Jan 14 2020 00:38:47 GMT-0500 (Eastern Standard Time)
 
 type AggregateFacebook {
   count: Int!
@@ -24,9 +24,9 @@ type BatchPayload {
 
 type Facebook implements Node {
   id: ID!
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 """A connection to a list of items."""
@@ -41,9 +41,9 @@ type FacebookConnection {
 
 input FacebookCreateInput {
   id: ID
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 input FacebookCreateOneInput {
@@ -73,9 +73,9 @@ enum FacebookOrderByInput {
 
 type FacebookPreviousValues {
   id: ID!
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 type FacebookSubscriptionPayload {
@@ -324,9 +324,9 @@ input FacebookWhereUniqueInput {
 
 type Google implements Node {
   id: ID!
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 """A connection to a list of items."""
@@ -341,9 +341,9 @@ type GoogleConnection {
 
 input GoogleCreateInput {
   id: ID
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 input GoogleCreateOneInput {
@@ -373,9 +373,9 @@ enum GoogleOrderByInput {
 
 type GooglePreviousValues {
   id: ID!
-  token: String!
-  email: String!
-  name: String!
+  token: String
+  email: String
+  name: String
 }
 
 type GoogleSubscriptionPayload {
@@ -624,9 +624,9 @@ input GoogleWhereUniqueInput {
 
 type Local implements Node {
   id: ID!
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
 }
 
 """A connection to a list of items."""
@@ -641,9 +641,9 @@ type LocalConnection {
 
 input LocalCreateInput {
   id: ID
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
 }
 
 input LocalCreateOneInput {
@@ -673,9 +673,9 @@ enum LocalOrderByInput {
 
 type LocalPreviousValues {
   id: ID!
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
 }
 
 type LocalSubscriptionPayload {

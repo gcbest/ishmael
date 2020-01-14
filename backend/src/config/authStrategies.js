@@ -203,28 +203,40 @@ passport.use(
         async function(req, accessToken, refreshToken, profile, cb) {
             // check if the user is already logged in
             if (!req.user) {
-                const existingUser = await db.query.user(
-                    { where: { google: { id: profile.id } } },
-                    // '{ id, permissions, email, name }'
-                    '{ id }'
-                );
+                const existingUser = await db.query
+                    .users(
+                        { where: { google: { id: profile.id } } },
+                        // '{ id, permissions, email, name }'
+                        '{ id }'
+                    )
+                    .catch(e => {
+                        throw Error(`Error finding user: ${e}`);
+                    });
 
-                if (existingUser) return cb(null, existingUser);
+                if (existingUser.length > 0) {
+                    return cb(null, existingUser[0]);
+                }
                 // TODO: create user and check passing userID
                 const newId = uuid();
-                const newUser = await db.mutation.createUser({
-                    data: {
-                        id: newId,
-                        local: { id: newId },
-                        google: {
-                            id: profile.id,
-                            token: accessToken,
-                            email: profile.emails[0].value,
-                            name: profile.displayName,
+                const newUser = await db.mutation
+                    .createUser({
+                        data: {
+                            id: newId,
+                            // local: { id: newId },
+                            // google: {
+                            //     id: profile.id,
+                            //     token: accessToken,
+                            //     email: profile.emails,
+                            //     name: profile.displayName,
+                            // },
+                            permissions: { set: ['USER'] },
                         },
-                        permissions: { set: ['USER'] },
-                    },
-                });
+                    })
+                    .catch(e => {
+                        throw Error(`Error creating user: ${e}`);
+                    });
+
+                console.log(newUser);
 
                 return cb(null, newUser);
 
@@ -268,14 +280,18 @@ passport.use(
             user.google.name = profile.displayName;
             user.google.email = profile.emails[0].value; // pull the first email
 
-            const updatedUser = await db.mutation.updateUser({
-                google: {
-                    id: profile.id,
-                    token: accessToken,
-                    email: profile.emails[0].value,
-                    name: profile.displayName,
-                },
-            });
+            const updatedUser = await db.mutation
+                .updateUser({
+                    google: {
+                        id: profile.id,
+                        token: accessToken,
+                        email: profile.emails[0].value,
+                        name: profile.displayName,
+                    },
+                })
+                .catch(e => {
+                    throw Error(`Could not update user: ${e}`);
+                });
 
             return cb(null, updatedUser);
         }
