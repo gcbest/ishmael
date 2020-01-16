@@ -19,6 +19,15 @@ server.express.use(passport.session());
 // 3. Middleware for Facebook and Google OAuth
 server.express.use('/auth', auth);
 
+server.express.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('/');
+    }
+);
+
 // 1. decode the JWT so we can get the user Id on each request
 // server.express.use((req, res, next) => {
 //     const { token } = req.cookies;

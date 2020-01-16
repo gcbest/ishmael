@@ -1,5 +1,5 @@
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const uuid = require('uuid/v4');
 
@@ -199,101 +199,102 @@ passport.use(
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: '/auth/google/callback',
+            passReqToCallback: true,
         },
-        async function(req, accessToken, refreshToken, profile, cb) {
+        async function(accessToken, refreshToken, profile, cb) {
             // check if the user is already logged in
-            if (!req.user) {
-                const existingUser = await db.query
-                    .users(
-                        { where: { google: { id: profile.id } } },
-                        // '{ id, permissions, email, name }'
-                        '{ id }'
-                    )
-                    .catch(e => {
-                        throw Error(`Error finding user: ${e}`);
-                    });
+            // if (!req.user) {
+            const existingUser = await db.query
+                .users(
+                    { where: { google: { id: profile.id } } },
+                    // '{ id, permissions, email, name }'
+                    '{ id }'
+                )
+                .catch(e => {
+                    throw Error(`Error finding user: ${e}`);
+                });
 
-                if (existingUser.length > 0) {
-                    return cb(null, existingUser[0]);
-                }
-                // TODO: create user and check passing userID
-                const newId = uuid().slice(20);
-                const newUser = await db.mutation
-                    .createUser({
-                        data: {
-                            id: newId,
-                            // local: { id: newId },
-                            // google: {
-                            //     id: profile.id,
-                            //     token: accessToken,
-                            //     email: profile.emails,
-                            //     name: profile.displayName,
-                            // },
-                            permissions: { set: ['USER'] },
-                        },
-                    })
-                    .catch(e => {
-                        throw Error(`Error creating user: ${e}`);
-                    });
-
-                console.log(newUser);
-
-                return cb(null, newUser);
-
-                // User.findOne({ 'google.id': profile.id }, function(err, user) {
-                //     if (err) return done(err);
-
-                //     if (user) {
-                //         // if there is a user id already but no token (user was linked at one point and then removed)
-                //         if (!user.google.token) {
-                //             user.google.token = token;
-                //             user.google.name = profile.displayName;
-                //             user.google.email = profile.emails[0].value; // pull the first email
-
-                //             user.save(function(err) {
-                //                 if (err) throw err;
-                //                 return done(null, user);
-                //             });
-                //         }
-
-                //         return done(null, user);
-                //     }
-                //     const newUser = new User();
-
-                //     newUser.google.id = profile.id;
-                //     newUser.google.token = token;
-                //     newUser.google.name = profile.displayName;
-                //     newUser.google.email = profile.emails[0].value; // pull the first email
-
-                //     newUser.save(function(err) {
-                //         if (err) throw err;
-                //         return done(null, newUser);
-                //     });
-                // });
+            if (existingUser.length > 0) {
+                return cb(null, existingUser[0]);
             }
-
-            // user already exists and is logged in, we have to link accounts
-            const { user } = req; // pull the user out of the session
-
-            user.google.id = profile.id;
-            user.google.token = accessToken;
-            user.google.name = profile.displayName;
-            user.google.email = profile.emails[0].value; // pull the first email
-
-            const updatedUser = await db.mutation
-                .updateUser({
-                    google: {
-                        id: profile.id,
-                        token: accessToken,
-                        email: profile.emails[0].value,
-                        name: profile.displayName,
+            // TODO: create user and check passing userID
+            const newId = uuid().slice(20);
+            const newUser = await db.mutation
+                .createUser({
+                    data: {
+                        id: newId,
+                        // local: { id: newId },
+                        // google: {
+                        //     id: profile.id,
+                        //     token: accessToken,
+                        //     email: profile.emails,
+                        //     name: profile.displayName,
+                        // },
+                        permissions: { set: ['USER'] },
                     },
                 })
                 .catch(e => {
-                    throw Error(`Could not update user: ${e}`);
+                    throw Error(`Error creating user: ${e}`);
                 });
 
-            return cb(null, updatedUser);
+            console.log(newUser);
+
+            return cb(null, newUser);
+
+            // User.findOne({ 'google.id': profile.id }, function(err, user) {
+            //     if (err) return done(err);
+
+            //     if (user) {
+            //         // if there is a user id already but no token (user was linked at one point and then removed)
+            //         if (!user.google.token) {
+            //             user.google.token = token;
+            //             user.google.name = profile.displayName;
+            //             user.google.email = profile.emails[0].value; // pull the first email
+
+            //             user.save(function(err) {
+            //                 if (err) throw err;
+            //                 return done(null, user);
+            //             });
+            //         }
+
+            //         return done(null, user);
+            //     }
+            //     const newUser = new User();
+
+            //     newUser.google.id = profile.id;
+            //     newUser.google.token = token;
+            //     newUser.google.name = profile.displayName;
+            //     newUser.google.email = profile.emails[0].value; // pull the first email
+
+            //     newUser.save(function(err) {
+            //         if (err) throw err;
+            //         return done(null, newUser);
+            //     });
+            // });
+            // }
+
+            // user already exists and is logged in, we have to link accounts
+            // const { user } = req; // pull the user out of the session
+
+            // user.google.id = profile.id;
+            // user.google.token = accessToken;
+            // user.google.name = profile.displayName;
+            // user.google.email = profile.emails[0].value; // pull the first email
+
+            // const updatedUser = await db.mutation
+            //     .updateUser({
+            //         google: {
+            //             id: profile.id,
+            //             token: accessToken,
+            //             email: profile.emails[0].value,
+            //             name: profile.displayName,
+            //         },
+            //     })
+            //     .catch(e => {
+            //         throw Error(`Could not update user: ${e}`);
+            //     });
+
+            // return cb(null, updatedUser);
         }
     )
 );

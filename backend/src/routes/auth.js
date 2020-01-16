@@ -6,27 +6,38 @@ const { addCookie } = require('../lib/utils');
 
 const router = express.Router();
 
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+
+// router.get(
+//     '/google/callback',
+//     passport.authenticate('google', { failureRedirect: '/login' }),
+//     function(req, res) {
+//         // Successful authentication, redirect home.
+//         res.redirect('/');
+//     }
+// );
+
 /** **** GOOGLE ***** */
 // send to consent screen
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+// router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 
-// get profile info
-router.get(
-    '/google/callback',
-    passport.authenticate('google'),
-    // addCookie
-    (req, res, next) => {
-        const { user } = req;
-        // create the JWT token for them
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-        // We set the jwt as a cookie on the response
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
-        });
-        next();
-    }
-);
+// // get profile info
+// router.get(
+//     '/google/callback',
+//     passport.authenticate('google'),
+//     // addCookie
+//     (req, res, next) => {
+//         const { user } = req;
+//         // create the JWT token for them
+//         const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+//         // We set the jwt as a cookie on the response
+//         res.cookie('token', token, {
+//             httpOnly: true,
+//             maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
+//         });
+//         next();
+//     }
+// );
 
 /** **** FACEBOOK ***** */
 router.get('/facebook', passport.authenticate('facebook'));
