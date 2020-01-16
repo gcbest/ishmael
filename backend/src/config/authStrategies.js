@@ -14,15 +14,15 @@ const db = require('../db');
 
 // used to serialize the user for the session
 passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    done(null, user);
 });
 
 // used to deserialize the user
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function(user, done) {
     // User.findById(id, function(err, user) {
     //     done(err, user);
     // });
-    done(null, { id });
+    done(null, user);
 });
 
 // =========================================================================
@@ -217,7 +217,7 @@ passport.use(
                     return cb(null, existingUser[0]);
                 }
                 // TODO: create user and check passing userID
-                const newId = uuid();
+                const newId = uuid().slice(20);
                 const newUser = await db.mutation
                     .createUser({
                         data: {
