@@ -3,6 +3,7 @@ require('./config/authStrategies');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+require('./config/authStrategies');
 const createServer = require('./createServer');
 const auth = require('./routes/auth');
 const db = require('./db');
