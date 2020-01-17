@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { useStyles } from '../pages';
+import SignUp from './SignUp';
 
 interface Props {
     theme: Theme;
@@ -16,6 +17,7 @@ const Home: React.FC<Props> = ({ theme, onToggleTheme }: Props) => {
             <Typography>{`${theme.palette.type} theme`}</Typography>
             <div>
                 <Button onClick={() => onToggleTheme()}>Toggle</Button>
+                <SignUp />
             </div>
         </div>
     );
