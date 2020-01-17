@@ -1,20 +1,14 @@
 # source: https://us1.prisma.sh/godfrey-best-e89415/ishmael/dev
-# timestamp: Tue Jan 14 2020 00:38:47 GMT-0500 (Eastern Standard Time)
-
-type AggregateFacebook {
-  count: Int!
-}
-
-type AggregateGoogle {
-  count: Int!
-}
-
-type AggregateLocal {
-  count: Int!
-}
+# timestamp: Fri Jan 17 2020 15:18:17 GMT-0500 (Eastern Standard Time)
 
 type AggregateUser {
   count: Int!
+}
+
+enum Auth {
+  LOCAL
+  GOOGLE
+  FACEBOOK
 }
 
 type BatchPayload {
@@ -22,645 +16,116 @@ type BatchPayload {
   count: Long!
 }
 
-type Facebook implements Node {
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Mutation {
+  createUser(data: UserCreateInput!): User!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteUser(where: UserWhereUniqueInput!): User
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
   id: ID!
-  token: String
-  email: String
-  name: String
 }
 
-"""A connection to a list of items."""
-type FacebookConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
 
-  """A list of edges."""
-  edges: [FacebookEdge]!
-  aggregate: AggregateFacebook!
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
 }
 
-input FacebookCreateInput {
-  id: ID
-  token: String
-  email: String
-  name: String
+enum Permission {
+  ADMIN
+  USER
+  PERMISSIONUPDATE
 }
 
-input FacebookCreateOneInput {
-  create: FacebookCreateInput
-  connect: FacebookWhereUniqueInput
+type Query {
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  user(where: UserWhereUniqueInput!): User
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
 }
 
-"""An edge in a connection."""
-type FacebookEdge {
-  """The item at the end of the edge."""
-  node: Facebook!
-
-  """A cursor for use in pagination."""
-  cursor: String!
+type Subscription {
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
-enum FacebookOrderByInput {
-  id_ASC
-  id_DESC
-  token_ASC
-  token_DESC
-  email_ASC
-  email_DESC
-  name_ASC
-  name_DESC
-}
-
-type FacebookPreviousValues {
-  id: ID!
-  token: String
-  email: String
-  name: String
-}
-
-type FacebookSubscriptionPayload {
-  mutation: MutationType!
-  node: Facebook
-  updatedFields: [String!]
-  previousValues: FacebookPreviousValues
-}
-
-input FacebookSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [FacebookSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [FacebookSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [FacebookSubscriptionWhereInput!]
-
-  """The subscription event gets dispatched when it's listed in mutation_in"""
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: FacebookWhereInput
-}
-
-input FacebookUpdateDataInput {
-  token: String
-  email: String
-  name: String
-}
-
-input FacebookUpdateInput {
-  token: String
-  email: String
-  name: String
-}
-
-input FacebookUpdateManyMutationInput {
-  token: String
-  email: String
-  name: String
-}
-
-input FacebookUpdateOneInput {
-  create: FacebookCreateInput
-  connect: FacebookWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: FacebookUpdateDataInput
-  upsert: FacebookUpsertNestedInput
-}
-
-input FacebookUpsertNestedInput {
-  update: FacebookUpdateDataInput!
-  create: FacebookCreateInput!
-}
-
-input FacebookWhereInput {
-  """Logical AND on all given filters."""
-  AND: [FacebookWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [FacebookWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [FacebookWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  token: String
-
-  """All values that are not equal to given value."""
-  token_not: String
-
-  """All values that are contained in given list."""
-  token_in: [String!]
-
-  """All values that are not contained in given list."""
-  token_not_in: [String!]
-
-  """All values less than the given value."""
-  token_lt: String
-
-  """All values less than or equal the given value."""
-  token_lte: String
-
-  """All values greater than the given value."""
-  token_gt: String
-
-  """All values greater than or equal the given value."""
-  token_gte: String
-
-  """All values containing the given string."""
-  token_contains: String
-
-  """All values not containing the given string."""
-  token_not_contains: String
-
-  """All values starting with the given string."""
-  token_starts_with: String
-
-  """All values not starting with the given string."""
-  token_not_starts_with: String
-
-  """All values ending with the given string."""
-  token_ends_with: String
-
-  """All values not ending with the given string."""
-  token_not_ends_with: String
-  email: String
-
-  """All values that are not equal to given value."""
-  email_not: String
-
-  """All values that are contained in given list."""
-  email_in: [String!]
-
-  """All values that are not contained in given list."""
-  email_not_in: [String!]
-
-  """All values less than the given value."""
-  email_lt: String
-
-  """All values less than or equal the given value."""
-  email_lte: String
-
-  """All values greater than the given value."""
-  email_gt: String
-
-  """All values greater than or equal the given value."""
-  email_gte: String
-
-  """All values containing the given string."""
-  email_contains: String
-
-  """All values not containing the given string."""
-  email_not_contains: String
-
-  """All values starting with the given string."""
-  email_starts_with: String
-
-  """All values not starting with the given string."""
-  email_not_starts_with: String
-
-  """All values ending with the given string."""
-  email_ends_with: String
-
-  """All values not ending with the given string."""
-  email_not_ends_with: String
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-}
-
-input FacebookWhereUniqueInput {
-  id: ID
-}
-
-type Google implements Node {
-  id: ID!
-  token: String
-  email: String
-  name: String
-}
-
-"""A connection to a list of items."""
-type GoogleConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [GoogleEdge]!
-  aggregate: AggregateGoogle!
-}
-
-input GoogleCreateInput {
-  id: ID
-  token: String
-  email: String
-  name: String
-}
-
-input GoogleCreateOneInput {
-  create: GoogleCreateInput
-  connect: GoogleWhereUniqueInput
-}
-
-"""An edge in a connection."""
-type GoogleEdge {
-  """The item at the end of the edge."""
-  node: Google!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum GoogleOrderByInput {
-  id_ASC
-  id_DESC
-  token_ASC
-  token_DESC
-  email_ASC
-  email_DESC
-  name_ASC
-  name_DESC
-}
-
-type GooglePreviousValues {
-  id: ID!
-  token: String
-  email: String
-  name: String
-}
-
-type GoogleSubscriptionPayload {
-  mutation: MutationType!
-  node: Google
-  updatedFields: [String!]
-  previousValues: GooglePreviousValues
-}
-
-input GoogleSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [GoogleSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [GoogleSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [GoogleSubscriptionWhereInput!]
-
-  """The subscription event gets dispatched when it's listed in mutation_in"""
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: GoogleWhereInput
-}
-
-input GoogleUpdateDataInput {
-  token: String
-  email: String
-  name: String
-}
-
-input GoogleUpdateInput {
-  token: String
-  email: String
-  name: String
-}
-
-input GoogleUpdateManyMutationInput {
-  token: String
-  email: String
-  name: String
-}
-
-input GoogleUpdateOneInput {
-  create: GoogleCreateInput
-  connect: GoogleWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: GoogleUpdateDataInput
-  upsert: GoogleUpsertNestedInput
-}
-
-input GoogleUpsertNestedInput {
-  update: GoogleUpdateDataInput!
-  create: GoogleCreateInput!
-}
-
-input GoogleWhereInput {
-  """Logical AND on all given filters."""
-  AND: [GoogleWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [GoogleWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [GoogleWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  token: String
-
-  """All values that are not equal to given value."""
-  token_not: String
-
-  """All values that are contained in given list."""
-  token_in: [String!]
-
-  """All values that are not contained in given list."""
-  token_not_in: [String!]
-
-  """All values less than the given value."""
-  token_lt: String
-
-  """All values less than or equal the given value."""
-  token_lte: String
-
-  """All values greater than the given value."""
-  token_gt: String
-
-  """All values greater than or equal the given value."""
-  token_gte: String
-
-  """All values containing the given string."""
-  token_contains: String
-
-  """All values not containing the given string."""
-  token_not_contains: String
-
-  """All values starting with the given string."""
-  token_starts_with: String
-
-  """All values not starting with the given string."""
-  token_not_starts_with: String
-
-  """All values ending with the given string."""
-  token_ends_with: String
-
-  """All values not ending with the given string."""
-  token_not_ends_with: String
-  email: String
-
-  """All values that are not equal to given value."""
-  email_not: String
-
-  """All values that are contained in given list."""
-  email_in: [String!]
-
-  """All values that are not contained in given list."""
-  email_not_in: [String!]
-
-  """All values less than the given value."""
-  email_lt: String
-
-  """All values less than or equal the given value."""
-  email_lte: String
-
-  """All values greater than the given value."""
-  email_gt: String
-
-  """All values greater than or equal the given value."""
-  email_gte: String
-
-  """All values containing the given string."""
-  email_contains: String
-
-  """All values not containing the given string."""
-  email_not_contains: String
-
-  """All values starting with the given string."""
-  email_starts_with: String
-
-  """All values not starting with the given string."""
-  email_not_starts_with: String
-
-  """All values ending with the given string."""
-  email_ends_with: String
-
-  """All values not ending with the given string."""
-  email_not_ends_with: String
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-}
-
-input GoogleWhereUniqueInput {
-  id: ID
-}
-
-type Local implements Node {
+type User implements Node {
   id: ID!
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  authType: Auth!
+  permissions: [Permission!]!
 }
 
 """A connection to a list of items."""
-type LocalConnection {
+type UserConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [LocalEdge]!
-  aggregate: AggregateLocal!
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
 }
 
-input LocalCreateInput {
+input UserCreateInput {
   id: ID
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  authType: Auth!
+  permissions: UserCreatepermissionsInput
 }
 
-input LocalCreateOneInput {
-  create: LocalCreateInput
-  connect: LocalWhereUniqueInput
+input UserCreatepermissionsInput {
+  set: [Permission!]
 }
 
 """An edge in a connection."""
-type LocalEdge {
+type UserEdge {
   """The item at the end of the edge."""
-  node: Local!
+  node: User!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum LocalOrderByInput {
+enum UserOrderByInput {
   id_ASC
   id_DESC
   name_ASC
@@ -669,31 +134,41 @@ enum LocalOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  resetToken_ASC
+  resetToken_DESC
+  resetTokenExpiry_ASC
+  resetTokenExpiry_DESC
+  authType_ASC
+  authType_DESC
 }
 
-type LocalPreviousValues {
+type UserPreviousValues {
   id: ID!
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  authType: Auth!
+  permissions: [Permission!]!
 }
 
-type LocalSubscriptionPayload {
+type UserSubscriptionPayload {
   mutation: MutationType!
-  node: Local
+  node: User
   updatedFields: [String!]
-  previousValues: LocalPreviousValues
+  previousValues: UserPreviousValues
 }
 
-input LocalSubscriptionWhereInput {
+input UserSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [LocalSubscriptionWhereInput!]
+  AND: [UserSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [LocalSubscriptionWhereInput!]
+  OR: [UserSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [LocalSubscriptionWhereInput!]
+  NOT: [UserSubscriptionWhereInput!]
 
   """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
@@ -712,50 +187,42 @@ input LocalSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: LocalWhereInput
+  node: UserWhereInput
 }
 
-input LocalUpdateDataInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  authType: Auth
+  permissions: UserUpdatepermissionsInput
 }
 
-input LocalUpdateInput {
+input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  authType: Auth
+  permissions: UserUpdatepermissionsInput
 }
 
-input LocalUpdateManyMutationInput {
-  name: String
-  email: String
-  password: String
+input UserUpdatepermissionsInput {
+  set: [Permission!]
 }
 
-input LocalUpdateOneInput {
-  create: LocalCreateInput
-  connect: LocalWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: LocalUpdateDataInput
-  upsert: LocalUpsertNestedInput
-}
-
-input LocalUpsertNestedInput {
-  update: LocalUpdateDataInput!
-  create: LocalCreateInput!
-}
-
-input LocalWhereInput {
+input UserWhereInput {
   """Logical AND on all given filters."""
-  AND: [LocalWhereInput!]
+  AND: [UserWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [LocalWhereInput!]
+  OR: [UserWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [LocalWhereInput!]
+  NOT: [UserWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -916,270 +383,6 @@ input LocalWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
-}
-
-input LocalWhereUniqueInput {
-  id: ID
-}
-
-"""
-The `Long` scalar type represents non-fractional signed whole numeric values.
-Long can represent values between -(2^63) and 2^63 - 1.
-"""
-scalar Long
-
-type Mutation {
-  createUser(data: UserCreateInput!): User!
-  createFacebook(data: FacebookCreateInput!): Facebook!
-  createLocal(data: LocalCreateInput!): Local!
-  createGoogle(data: GoogleCreateInput!): Google!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateFacebook(data: FacebookUpdateInput!, where: FacebookWhereUniqueInput!): Facebook
-  updateLocal(data: LocalUpdateInput!, where: LocalWhereUniqueInput!): Local
-  updateGoogle(data: GoogleUpdateInput!, where: GoogleWhereUniqueInput!): Google
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteFacebook(where: FacebookWhereUniqueInput!): Facebook
-  deleteLocal(where: LocalWhereUniqueInput!): Local
-  deleteGoogle(where: GoogleWhereUniqueInput!): Google
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertFacebook(where: FacebookWhereUniqueInput!, create: FacebookCreateInput!, update: FacebookUpdateInput!): Facebook!
-  upsertLocal(where: LocalWhereUniqueInput!, create: LocalCreateInput!, update: LocalUpdateInput!): Local!
-  upsertGoogle(where: GoogleWhereUniqueInput!, create: GoogleCreateInput!, update: GoogleUpdateInput!): Google!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyFacebooks(data: FacebookUpdateManyMutationInput!, where: FacebookWhereInput): BatchPayload!
-  updateManyLocals(data: LocalUpdateManyMutationInput!, where: LocalWhereInput): BatchPayload!
-  updateManyGoogles(data: GoogleUpdateManyMutationInput!, where: GoogleWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyFacebooks(where: FacebookWhereInput): BatchPayload!
-  deleteManyLocals(where: LocalWhereInput): BatchPayload!
-  deleteManyGoogles(where: GoogleWhereInput): BatchPayload!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-"""An object with an ID"""
-interface Node {
-  """The id of the object."""
-  id: ID!
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
-}
-
-enum Permission {
-  ADMIN
-  USER
-  PERMISSIONUPDATE
-}
-
-type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  facebooks(where: FacebookWhereInput, orderBy: FacebookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Facebook]!
-  locals(where: LocalWhereInput, orderBy: LocalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Local]!
-  googles(where: GoogleWhereInput, orderBy: GoogleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Google]!
-  user(where: UserWhereUniqueInput!): User
-  facebook(where: FacebookWhereUniqueInput!): Facebook
-  local(where: LocalWhereUniqueInput!): Local
-  google(where: GoogleWhereUniqueInput!): Google
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  facebooksConnection(where: FacebookWhereInput, orderBy: FacebookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FacebookConnection!
-  localsConnection(where: LocalWhereInput, orderBy: LocalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocalConnection!
-  googlesConnection(where: GoogleWhereInput, orderBy: GoogleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GoogleConnection!
-
-  """Fetches an object given its ID"""
-  node(
-    """The ID of an object"""
-    id: ID!
-  ): Node
-}
-
-type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  facebook(where: FacebookSubscriptionWhereInput): FacebookSubscriptionPayload
-  local(where: LocalSubscriptionWhereInput): LocalSubscriptionPayload
-  google(where: GoogleSubscriptionWhereInput): GoogleSubscriptionPayload
-}
-
-type User implements Node {
-  id: ID!
-  resetToken: String
-  resetTokenExpiry: Float
-  permissions: [Permission!]!
-  local: Local
-  facebook: Facebook
-  google: Google
-}
-
-"""A connection to a list of items."""
-type UserConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [UserEdge]!
-  aggregate: AggregateUser!
-}
-
-input UserCreateInput {
-  id: ID
-  resetToken: String
-  resetTokenExpiry: Float
-  permissions: UserCreatepermissionsInput
-  local: LocalCreateOneInput
-  facebook: FacebookCreateOneInput
-  google: GoogleCreateOneInput
-}
-
-input UserCreatepermissionsInput {
-  set: [Permission!]
-}
-
-"""An edge in a connection."""
-type UserEdge {
-  """The item at the end of the edge."""
-  node: User!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum UserOrderByInput {
-  id_ASC
-  id_DESC
-  resetToken_ASC
-  resetToken_DESC
-  resetTokenExpiry_ASC
-  resetTokenExpiry_DESC
-}
-
-type UserPreviousValues {
-  id: ID!
-  resetToken: String
-  resetTokenExpiry: Float
-  permissions: [Permission!]!
-}
-
-type UserSubscriptionPayload {
-  mutation: MutationType!
-  node: User
-  updatedFields: [String!]
-  previousValues: UserPreviousValues
-}
-
-input UserSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [UserSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [UserSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [UserSubscriptionWhereInput!]
-
-  """The subscription event gets dispatched when it's listed in mutation_in"""
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: UserWhereInput
-}
-
-input UserUpdateInput {
-  resetToken: String
-  resetTokenExpiry: Float
-  permissions: UserUpdatepermissionsInput
-  local: LocalUpdateOneInput
-  facebook: FacebookUpdateOneInput
-  google: GoogleUpdateOneInput
-}
-
-input UserUpdateManyMutationInput {
-  resetToken: String
-  resetTokenExpiry: Float
-  permissions: UserUpdatepermissionsInput
-}
-
-input UserUpdatepermissionsInput {
-  set: [Permission!]
-}
-
-input UserWhereInput {
-  """Logical AND on all given filters."""
-  AND: [UserWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [UserWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [UserWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
   resetToken: String
 
   """All values that are not equal to given value."""
@@ -1242,11 +445,19 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   resetTokenExpiry_gte: Float
-  local: LocalWhereInput
-  facebook: FacebookWhereInput
-  google: GoogleWhereInput
+  authType: Auth
+
+  """All values that are not equal to given value."""
+  authType_not: Auth
+
+  """All values that are contained in given list."""
+  authType_in: [Auth!]
+
+  """All values that are not contained in given list."""
+  authType_not_in: [Auth!]
 }
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }

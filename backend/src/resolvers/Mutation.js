@@ -3,32 +3,26 @@ const jwt = require('jsonwebtoken');
 const { randomBytes } = require('crypto');
 const { promisify } = require('util');
 const { transport, makeANiceEmail } = require('../lib/mail');
-const { hasPermission } = require('../lib/utils');
+const { hasPermission, setCookie } = require('../lib/utils');
 
 const Mutations = {
     async signup(parent, args, ctx, info) {
         // lowercase their email
-        args.email = args.local.email.toLowerCase();
+        args.email = args.email.toLowerCase();
         // hash their password
         const password = await bcrypt.hash(args.password, 10);
         // create the user in the database
         const user = await ctx.db.mutation.createUser(
             {
                 data: {
-                    local: { ...args },
+                    ...args,
                     password,
                     permissions: { set: ['USER'] },
                 },
             },
             info
         );
-        // create the JWT token for them
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-        // We set the jwt as a cookie on the response
-        ctx.response.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
-        });
+        setCookie(user, ctx.response);
         // Finalllllly we return the user to the browser
         return user;
     },
@@ -43,14 +37,9 @@ const Mutations = {
         if (!valid) {
             throw new Error('Invalid Password!');
         }
-        // 3. generate the JWT Token
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-        // 4. Set the cookie with the token
-        ctx.response.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 365,
-        });
-        // 5. Return the user
+        // 3. Set cookie
+        setCookie(user, ctx.response);
+        // 4. Return the user
         return user;
     },
     signout(parent, args, ctx, info) {

@@ -1,7 +1,5 @@
-// .env configuring
 require('dotenv').config();
-// require('./config/googleAuthStrategy');
-// require('./config/facebookAuthStrategy');
+require('./config/authStrategies');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -16,42 +14,31 @@ server.express.use(cookieParser());
 server.express.use(passport.initialize());
 server.express.use(passport.session());
 
-// 3. Middleware for Facebook and Google OAuth
-server.express.use('/auth', auth);
-
-server.express.get(
-    '/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    function(req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/');
-    }
-);
-
 // 1. decode the JWT so we can get the user Id on each request
-// server.express.use((req, res, next) => {
-//     const { token } = req.cookies;
-//     if (token) {
-//         const { userId } = jwt.verify(token, process.env.APP_SECRET);
-//         // put the userId onto the req for future requests to access
-//         req.userId = userId;
-//     }
-//     next();
-// });
+server.express.use((req, res, next) => {
+    const { token } = req.cookies;
+    if (token) {
+        const { userId } = jwt.verify(token, process.env.APP_SECRET);
+        // put the userId onto the req for future requests to access
+        req.userId = userId;
+    }
+    next();
+});
 
-// // 2. Create a middleware that populates the user on each request
+// 2. Create a middleware that populates the user on each request
+server.express.use(async (req, res, next) => {
+    // if they aren't logged in, skip this
+    if (!req.userId) return next();
+    const user = await db.query.user(
+        { where: { id: req.userId } },
+        // '{ id, permissions, email, name }'
+        '{ id }'
+    );
+    req.user = user;
+    next();
+});
 
-// server.express.use(async (req, res, next) => {
-//     // if they aren't logged in, skip this
-//     if (!req.userId) return next();
-//     const user = await db.query
-//         .user({ where: { id: req.userId } }, '{ id, permissions }')
-//         .catch(e => {
-//             throw Error(`Could not find user: ${e}`);
-//         });
-//     req.user = user;
-//     next();
-// });
+server.express.use('/auth', auth);
 
 server.start(
     {
