@@ -1,8 +1,14 @@
 # source: https://us1.prisma.sh/godfrey-best-e89415/ishmael/dev
-# timestamp: Fri Jan 03 2020 22:47:37 GMT-0500 (Eastern Standard Time)
+# timestamp: Fri Jan 17 2020 10:37:49 GMT-0500 (Eastern Standard Time)
 
 type AggregateUser {
   count: Int!
+}
+
+enum Auth {
+  LOCAL
+  GOOGLE
+  FACEBOOK
 }
 
 type BatchPayload {
@@ -76,11 +82,12 @@ type Subscription {
 
 type User implements Node {
   id: ID!
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
   resetToken: String
   resetTokenExpiry: Float
+  authType: Auth!
   permissions: [Permission!]!
 }
 
@@ -96,11 +103,12 @@ type UserConnection {
 
 input UserCreateInput {
   id: ID
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
   resetToken: String
   resetTokenExpiry: Float
+  authType: Auth!
   permissions: UserCreatepermissionsInput
 }
 
@@ -130,15 +138,18 @@ enum UserOrderByInput {
   resetToken_DESC
   resetTokenExpiry_ASC
   resetTokenExpiry_DESC
+  authType_ASC
+  authType_DESC
 }
 
 type UserPreviousValues {
   id: ID!
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  email: String
+  password: String
   resetToken: String
   resetTokenExpiry: Float
+  authType: Auth!
   permissions: [Permission!]!
 }
 
@@ -185,6 +196,7 @@ input UserUpdateInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  authType: Auth
   permissions: UserUpdatepermissionsInput
 }
 
@@ -194,6 +206,7 @@ input UserUpdateManyMutationInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  authType: Auth
   permissions: UserUpdatepermissionsInput
 }
 
@@ -432,6 +445,16 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   resetTokenExpiry_gte: Float
+  authType: Auth
+
+  """All values that are not equal to given value."""
+  authType_not: Auth
+
+  """All values that are contained in given list."""
+  authType_in: [Auth!]
+
+  """All values that are not contained in given list."""
+  authType_not_in: [Auth!]
 }
 
 input UserWhereUniqueInput {

@@ -1,7 +1,5 @@
-// .env configuring
 require('dotenv').config();
-require('./config/googleAuthStrategy');
-require('./config/facebookAuthStrategy');
+require('./config/authStrategies');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -15,8 +13,6 @@ server.express.use(cookieParser());
 server.express.use(passport.initialize());
 server.express.use(passport.session());
 
-server.express.use('/auth', auth);
-
 // 1. decode the JWT so we can get the user Id on each request
 server.express.use((req, res, next) => {
     const { token } = req.cookies;
@@ -29,17 +25,19 @@ server.express.use((req, res, next) => {
 });
 
 // 2. Create a middleware that populates the user on each request
-
 server.express.use(async (req, res, next) => {
     // if they aren't logged in, skip this
     if (!req.userId) return next();
     const user = await db.query.user(
         { where: { id: req.userId } },
-        '{ id, permissions, email, name }'
+        // '{ id, permissions, email, name }'
+        '{ id }'
     );
     req.user = user;
     next();
 });
+
+server.express.use('/auth', auth);
 
 server.start(
     {

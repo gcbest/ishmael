@@ -1,0 +1,7 @@
+const AUTHTYPE = {
+    LOCAL: 'LOCAL',
+    GOOGLE: 'GOOGLE',
+    FACEBOOK: 'FACEBOOK',
+};
+
+exports.AUTHTYPE = AUTHTYPE;
