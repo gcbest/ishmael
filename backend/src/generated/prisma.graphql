@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/godfrey-best-e89415/ishmael/dev
-# timestamp: Fri Jan 17 2020 10:37:49 GMT-0500 (Eastern Standard Time)
+# timestamp: Fri Jan 17 2020 15:18:17 GMT-0500 (Eastern Standard Time)
 
 type AggregateUser {
   count: Int!
@@ -24,29 +24,11 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
-  createFacebook(data: FacebookCreateInput!): Facebook!
-  createLocal(data: LocalCreateInput!): Local!
-  createGoogle(data: GoogleCreateInput!): Google!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateFacebook(data: FacebookUpdateInput!, where: FacebookWhereUniqueInput!): Facebook
-  updateLocal(data: LocalUpdateInput!, where: LocalWhereUniqueInput!): Local
-  updateGoogle(data: GoogleUpdateInput!, where: GoogleWhereUniqueInput!): Google
   deleteUser(where: UserWhereUniqueInput!): User
-  deleteFacebook(where: FacebookWhereUniqueInput!): Facebook
-  deleteLocal(where: LocalWhereUniqueInput!): Local
-  deleteGoogle(where: GoogleWhereUniqueInput!): Google
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertFacebook(where: FacebookWhereUniqueInput!, create: FacebookCreateInput!, update: FacebookUpdateInput!): Facebook!
-  upsertLocal(where: LocalWhereUniqueInput!, create: LocalCreateInput!, update: LocalUpdateInput!): Local!
-  upsertGoogle(where: GoogleWhereUniqueInput!, create: GoogleCreateInput!, update: GoogleUpdateInput!): Google!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyFacebooks(data: FacebookUpdateManyMutationInput!, where: FacebookWhereInput): BatchPayload!
-  updateManyLocals(data: LocalUpdateManyMutationInput!, where: LocalWhereInput): BatchPayload!
-  updateManyGoogles(data: GoogleUpdateManyMutationInput!, where: GoogleWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyFacebooks(where: FacebookWhereInput): BatchPayload!
-  deleteManyLocals(where: LocalWhereInput): BatchPayload!
-  deleteManyGoogles(where: GoogleWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -84,17 +66,8 @@ enum Permission {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  facebooks(where: FacebookWhereInput, orderBy: FacebookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Facebook]!
-  locals(where: LocalWhereInput, orderBy: LocalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Local]!
-  googles(where: GoogleWhereInput, orderBy: GoogleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Google]!
   user(where: UserWhereUniqueInput!): User
-  facebook(where: FacebookWhereUniqueInput!): Facebook
-  local(where: LocalWhereUniqueInput!): Local
-  google(where: GoogleWhereUniqueInput!): Google
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  facebooksConnection(where: FacebookWhereInput, orderBy: FacebookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FacebookConnection!
-  localsConnection(where: LocalWhereInput, orderBy: LocalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocalConnection!
-  googlesConnection(where: GoogleWhereInput, orderBy: GoogleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GoogleConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -105,9 +78,6 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  facebook(where: FacebookSubscriptionWhereInput): FacebookSubscriptionPayload
-  local(where: LocalSubscriptionWhereInput): LocalSubscriptionPayload
-  google(where: GoogleSubscriptionWhereInput): GoogleSubscriptionPayload
 }
 
 type User implements Node {
@@ -119,9 +89,6 @@ type User implements Node {
   resetTokenExpiry: Float
   authType: Auth!
   permissions: [Permission!]!
-  local: Local
-  facebook: Facebook
-  google: Google
 }
 
 """A connection to a list of items."""
@@ -143,9 +110,6 @@ input UserCreateInput {
   resetTokenExpiry: Float
   authType: Auth!
   permissions: UserCreatepermissionsInput
-  local: LocalCreateOneInput
-  facebook: FacebookCreateOneInput
-  google: GoogleCreateOneInput
 }
 
 input UserCreatepermissionsInput {
@@ -164,6 +128,12 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
   resetToken_ASC
   resetToken_DESC
   resetTokenExpiry_ASC
@@ -221,16 +191,19 @@ input UserSubscriptionWhereInput {
 }
 
 input UserUpdateInput {
+  name: String
+  email: String
+  password: String
   resetToken: String
   resetTokenExpiry: Float
   authType: Auth
   permissions: UserUpdatepermissionsInput
-  local: LocalUpdateOneInput
-  facebook: FacebookUpdateOneInput
-  google: GoogleUpdateOneInput
 }
 
 input UserUpdateManyMutationInput {
+  name: String
+  email: String
+  password: String
   resetToken: String
   resetTokenExpiry: Float
   authType: Auth
@@ -290,6 +263,126 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
   resetToken: String
 
   """All values that are not equal to given value."""
@@ -366,4 +459,5 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
