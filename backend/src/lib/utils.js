@@ -7,13 +7,12 @@ const hasPermission = (user, permissionsNeeded) => {
     );
     if (!matchedPermissions.length) {
         // eslint-disable-next-line prettier/prettier
-                throw new Error(`You do not have sufficient permissions: ${permissionsNeeded} You Have: ${user.permissions}`);
+        throw new Error(`You do not have sufficient permissions: ${permissionsNeeded} You Have: ${user.permissions}`);
     }
     return true;
 };
 
-const setCookie = (req, res) => {
-    const { user } = req;
+const setCookie = (user, res) => {
     // create the JWT token for them
     const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
     // We set the jwt as a cookie on the response
@@ -21,6 +20,11 @@ const setCookie = (req, res) => {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
     });
+};
+
+const setCookieAndRedirect = (req, res) => {
+    const { user } = req;
+    setCookie(user, res);
     res.send('reached callback uri');
 };
 
@@ -43,6 +47,9 @@ const findOrCreateUser = async (profile, authType, cb) => {
     return cb(null, newUser);
 };
 
-exports.hasPermission = hasPermission;
-exports.setCookie = setCookie;
-exports.findOrCreateUser = findOrCreateUser;
+module.exports = {
+    hasPermission,
+    setCookie,
+    setCookieAndRedirect,
+    findOrCreateUser,
+};
